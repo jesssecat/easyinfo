@@ -23,6 +23,7 @@
 	@$update="select u.id,u.username,p.uid,p.names,p.addres,p.phone,p.edu,p.sex,p.presens from user_reg as u left join user_info as p on u.id=p.uid where id=$id;";
 	@$updates="update user_info set names='$names',addres='$addres',phone='$phone',sex='$sex',presens='$presens',edu='$edu' where uid='$uid';";
 	@$selUser="select * from user_reg where username='$selUser';";
+
 	
 	//两表关联，查出数据来
 	switch ($act){
@@ -39,7 +40,10 @@
 				if(is_array($id)){
 					@$id=implode(",",$id);
 					@$del="delete from user_reg where id in($id);";
+					$dels="delete from user_info where uid in($id);";
+
 					$del=connect($del);
+					$dels=connect($dels);
 					if($del){
 						echo "<script>alert('删除失败')</script>";
 						echo "<meta http-equiv='refresh' content='0;url=list.php'>";
@@ -49,7 +53,11 @@
 					}
 				}else{
 						$del="delete from user_reg where id in($id);";
+						$dels="delete from user_info where uid in($id);";
+						
 						$del=connect($del);
+						$dels=connect($dels);
+						connect($selUsers);
 						if($del){
 							echo "<script>alert('删除失败')</script>";
 							echo "<meta http-equiv='refresh' content='0;url=list.php'>";
@@ -67,12 +75,13 @@
 		case 'updateadd':
 			$arr=connect($info);
 				if(empty($arr)){
-					echo "是空的";
 					$updates=connect($addinfo);
 					if($updates){
-						echo "插入成功";
-					}else{
 						echo "插入失败";
+						echo "<meta http-equiv='refresh' content='0;url=list.php'>";
+					}else{
+						echo "插入成功";
+						echo "<meta http-equiv='refresh' content='0;url=list.php'>";
 					}
 				}else{
 					$type=connect($updates);
